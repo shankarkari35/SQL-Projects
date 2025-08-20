@@ -1,0 +1,83 @@
+Online Store Reporting Project Using Views
+Project Overview
+
+This project simulates an online store database and demonstrates how to use MySQL Views for reporting purposes. The goal is to simplify complex queries, provide reusable reports, and practice real-world database design concepts.
+
+Database Structure
+Tables
+Table Name	Purpose
+customers	Stores customer information (ID, name, email)
+products	Stores product information (ID, name, price)
+orders	Stores customer orders (ID, customer ID, date, status)
+order_items	Stores products in each order (junction table for M:N relationship)
+Relationships (Cardinality)
+From Table	To Table	Relationship
+customers	orders	1:N (One customer → Many orders)
+orders	order_items	1:N (One order → Many items)
+products	order_items	1:N (One product → Many order items)
+orders ↔ products	order_items	M:N via order_items junction table
+Sample Data
+
+Customers: Alice, Bob
+
+Products: Laptop, Mouse, Keyboard
+
+Orders: Two orders, one completed, one pending
+
+Order Items: Products linked to orders with quantities
+
+Views Created
+1. Customer Order Summary
+CREATE VIEW customer_order_summary AS
+SELECT c.customer_id, c.customer_name, COUNT(o.order_id) AS total_orders
+FROM customers c
+LEFT JOIN orders o ON c.customer_id = o.customer_id
+GROUP BY c.customer_id, c.customer_name;
+
+
+Purpose: Quickly see the total number of orders per customer.
+
+2. Order Details with Product Info
+CREATE VIEW order_details_view AS
+SELECT o.order_id, o.customer_id, c.customer_name, p.product_name, oi.quantity, (oi.quantity * p.price) AS total_price
+FROM orders o
+JOIN customers c ON o.customer_id = c.customer_id
+JOIN order_items oi ON o.order_id = oi.order_id
+JOIN products p ON oi.product_id = p.product_id;
+
+
+Purpose: Shows detailed order info including customer, product, quantity, and total price per item.
+
+3. Completed Orders Only
+CREATE VIEW completed_orders AS
+SELECT * FROM orders
+WHERE status = 'Completed';
+
+
+Purpose: Filters orders to only show completed orders.
+
+How to Query Views
+SELECT * FROM customer_order_summary;
+SELECT * FROM order_details_view;
+SELECT * FROM completed_orders;
+
+
+Views simplify querying for reporting without modifying base tables.
+
+Optional Extensions
+
+Materialized Views: Precompute heavy aggregates like monthly sales for faster reporting.
+
+Top Customers View: Identify customers with the highest total purchases.
+
+Monthly Sales Summary: Track revenue trends grouped by month.
+
+Key Learnings
+
+Designing tables with proper cardinality and relationships.
+
+Writing complex joins and aggregation queries.
+
+Creating views for reusable, simplified reports.
+
+Understanding the difference between normal views and materialized views in MySQL.
