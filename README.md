@@ -9,6 +9,7 @@ It includes everything from basic queries to advanced automation using functions
 - Database Design Examples
 - Stored Functions & Procedures
 - Triggers for logging & validation
+- advanced joins with tables and views
 - Events for scheduling & automation
 - Real-world mini projects
 
